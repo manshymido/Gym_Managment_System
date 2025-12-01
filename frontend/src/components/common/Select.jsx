@@ -1,0 +1,107 @@
+import React from 'react';
+import { colors, borderRadius, shadows, transitions } from '../../design-system/theme';
+
+const Select = ({
+  value,
+  onChange,
+  options = [],
+  placeholder = 'اختر...',
+  required = false,
+  disabled = false,
+  error = false,
+  label,
+  id,
+  ...props
+}) => {
+  const selectStyle = {
+    width: '100%',
+    padding: '0.875rem',
+    border: `2px solid ${error ? colors.danger.main : colors.gray[200]}`,
+    borderRadius: borderRadius.base,
+    fontSize: '1rem',
+    fontFamily: 'inherit',
+    transition: transitions.base,
+    backgroundColor: disabled ? colors.gray[100] : colors.background.paper,
+    color: colors.text.primary,
+    cursor: disabled ? 'not-allowed' : 'pointer',
+    ...props.style
+  };
+
+  const handleFocus = (e) => {
+    if (!disabled && !error) {
+      e.target.style.borderColor = colors.primary.main;
+      e.target.style.boxShadow = `0 0 0 3px ${colors.primary.light}40`;
+    }
+  };
+
+  const handleBlur = (e) => {
+    e.target.style.borderColor = error ? colors.danger.main : colors.gray[200];
+    e.target.style.boxShadow = 'none';
+  };
+
+  const selectId = id || (label ? `select-${label.replace(/\s+/g, '-').toLowerCase()}` : undefined);
+
+  return (
+    <div style={{ width: '100%' }}>
+      {label && (
+        <label
+          htmlFor={selectId}
+          style={{
+            display: 'block',
+            fontSize: '0.875rem',
+            fontWeight: 500,
+            color: colors.text.secondary,
+            marginBottom: '0.5rem'
+          }}
+        >
+          {label}
+          {required && <span style={{ color: colors.danger.main, marginRight: '0.25rem' }}>*</span>}
+        </label>
+      )}
+      <select
+        id={selectId}
+        value={value}
+        onChange={onChange}
+        required={required}
+        disabled={disabled}
+        style={selectStyle}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
+        {...props}
+      >
+        {placeholder && (
+          <option value="" disabled={required}>
+            {placeholder}
+          </option>
+        )}
+        {options.map((option) => {
+          if (typeof option === 'string') {
+            return (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            );
+          }
+          return (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          );
+        })}
+      </select>
+      {error && typeof error === 'string' && (
+        <span style={{
+          display: 'block',
+          fontSize: '0.75rem',
+          color: colors.danger.main,
+          marginTop: '0.25rem'
+        }}>
+          {error}
+        </span>
+      )}
+    </div>
+  );
+};
+
+export default Select;
+

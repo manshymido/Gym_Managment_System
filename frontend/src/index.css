@@ -1,0 +1,196 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  direction: rtl;
+  background-color: #f8f9fa;
+  line-height: 1.6;
+  color: #1f2937;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* CSS Variables for Design System */
+:root {
+  /* Colors */
+  --color-primary: #667eea;
+  --color-primary-dark: #764ba2;
+  --color-primary-light: #e0e7ff;
+  --color-success: #10b981;
+  --color-success-dark: #059669;
+  --color-success-light: #ecfdf5;
+  --color-warning: #f59e0b;
+  --color-warning-dark: #d97706;
+  --color-warning-light: #fffbeb;
+  --color-danger: #ef4444;
+  --color-danger-dark: #dc2626;
+  --color-danger-light: #fee2e2;
+  --color-info: #3b82f6;
+  --color-info-dark: #2563eb;
+  --color-info-light: #eff6ff;
+  
+  /* Gray Scale */
+  --color-gray-50: #f9fafb;
+  --color-gray-100: #f3f4f6;
+  --color-gray-200: #e5e7eb;
+  --color-gray-300: #d1d5db;
+  --color-gray-400: #9ca3af;
+  --color-gray-500: #6b7280;
+  --color-gray-600: #4b5563;
+  --color-gray-700: #374151;
+  --color-gray-800: #1f2937;
+  --color-gray-900: #111827;
+  
+  /* Text Colors */
+  --color-text-primary: #1f2937;
+  --color-text-secondary: #6b7280;
+  --color-text-disabled: #9ca3af;
+  
+  /* Background Colors */
+  --color-bg-default: #f8f9fa;
+  --color-bg-paper: #ffffff;
+  --color-bg-hover: #f9fafb;
+  
+  /* Spacing */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 0.75rem;
+  --spacing-base: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  --spacing-2xl: 2.5rem;
+  --spacing-3xl: 4rem;
+  
+  /* Border Radius */
+  --radius-sm: 4px;
+  --radius-base: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
+  
+  /* Shadows */
+  --shadow-sm: 0 2px 5px rgba(0,0,0,0.05);
+  --shadow-base: 0 4px 20px rgba(0,0,0,0.08);
+  --shadow-md: 0 4px 15px rgba(0,0,0,0.1);
+  --shadow-lg: 0 8px 25px rgba(0,0,0,0.12);
+  
+  /* Transitions */
+  --transition-fast: 0.15s ease;
+  --transition-base: 0.2s ease;
+  --transition-slow: 0.3s ease;
+}
+
+/* Button hover effects */
+button:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+/* Link styles */
+a {
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  opacity: 0.8;
+}
+
+/* Input focus styles */
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* Spinner animation */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Card hover effects */
+.statCard:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Action button hover effects */
+.actionButton:hover {
+  border-color: var(--color-primary);
+  background-color: var(--color-bg-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Nav button hover effects */
+button.navButton:hover:not(.navButtonActive) {
+  background-color: var(--color-gray-100);
+  color: var(--color-text-primary);
+}
+
+/* Logout button hover */
+.logoutButton:hover {
+  background-color: var(--color-danger-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
+}
+
+/* Delete button hover */
+.deleteButton:hover {
+  background-color: var(--color-danger-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
+}
+
+/* Search input focus */
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="tel"]:focus,
+input[type="date"]:focus,
+input[type="number"]:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  outline: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  body {
+    font-size: 14px;
+  }
+  
+  aside[style*="width"] {
+    width: 80px !important;
+  }
+  
+  .mainContent {
+    margin-right: 80px !important;
+  }
+  
+  div[style*="grid-template-columns"] {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .statsGrid {
+    grid-template-columns: 1fr !important;
+  }
+}
