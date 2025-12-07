@@ -1,0 +1,268 @@
+/* Card Styles - أنماط البطاقات */
+
+.card {
+  width: 100%;
+  background-color: var(--color-bg-paper);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  box-shadow: var(--shadow-base);
+  transition: var(--transition-slow);
+}
+
+.statCard {
+  transition: var(--transition-base);
+}
+
+.statCard:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.cardHover {
+  transition: var(--transition-slow);
+}
+
+.cardHover:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.cardTitleContainer {
+  margin-bottom: 1.5rem;
+}
+
+.cardTitleContainerWithSubtitle {
+  margin-bottom: 0.5rem;
+}
+
+.cardTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.cardSubtitle {
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+  margin: 0.5rem 0 0 0;
+}
+
+.cardMedium {
+  width: 100%;
+  max-width: 450px;
+}
+
+.cardLarge {
+  width: 100%;
+  max-width: 700px;
+}
+
+
+/* Feature Card */
+.featureCard {
+  background-color: var(--color-bg-paper);
+  padding: var(--spacing-xl);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-base);
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.featureCard:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.featureIcon {
+  font-size: 3rem;
+  margin-bottom: var(--spacing-base);
+}
+
+.featureTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: var(--spacing-base);
+  color: var(--color-text-primary);
+}
+
+.featureDescription {
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+/* Plan Card */
+.planCard {
+  background-color: var(--color-bg-paper);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  box-shadow: var(--shadow-base);
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s ease;
+  border: 2px solid var(--color-gray-100);
+}
+
+.planCard:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.planHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--spacing-base);
+  padding-bottom: var(--spacing-base);
+  border-bottom: 2px solid var(--color-gray-200);
+}
+
+.planName {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.planPrice {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.priceValue {
+  font-size: 2rem;
+  font-weight: 700;
+  background: var(--color-primary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.priceCurrency {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+}
+
+.planDescription {
+  color: var(--color-text-secondary);
+  margin: 0 0 var(--spacing-base) 0;
+  line-height: 1.6;
+}
+
+.planDetails {
+  flex: 1;
+  margin-bottom: var(--spacing-xl);
+}
+
+.detailItem {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
+  color: var(--color-text-primary);
+  font-size: 0.9375rem;
+}
+
+.detailIcon {
+  font-size: 1.125rem;
+}
+
+.featuresList {
+  margin-top: var(--spacing-base);
+  padding-top: var(--spacing-base);
+  border-top: 1px solid var(--color-gray-200);
+}
+
+.featuresUl {
+  margin: var(--spacing-sm) 0 0 0;
+  padding-right: var(--spacing-xl);
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+}
+
+/* Success Card */
+.successCard {
+  text-align: center;
+  max-width: 500px;
+  padding: var(--spacing-3xl);
+}
+
+.successIcon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: var(--color-success);
+  color: white;
+  font-size: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto var(--spacing-xl);
+}
+
+.successTitle {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-base);
+}
+
+.successMessage {
+  font-size: 1.1rem;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-xl);
+  line-height: 1.6;
+}
+
+/* Plan Summary */
+.planSummary {
+  background-color: var(--color-gray-50);
+  padding: var(--spacing-base);
+  border-radius: var(--radius-base);
+  margin-top: var(--spacing-base);
+}
+
+.summaryRow {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-sm);
+  font-size: 1rem;
+}
+
+.summaryRow:last-child {
+  margin-bottom: 0;
+}
+
+.summaryValue {
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.userInfo {
+  margin-top: var(--spacing-base);
+  padding: var(--spacing-md);
+  background-color: var(--color-info-light);
+  border-radius: var(--radius-base);
+  border: 1px solid rgba(59, 130, 246, 0.4);
+}
+
+.userInfoText {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--color-info-dark);
+}
+
+.notFoundCard {
+  text-align: center;
+  max-width: 500px;
+}
+
+.notFoundTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-lg);
+}
+

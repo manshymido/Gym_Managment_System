@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getAllGymManagers, deleteGymManager, getAllPlans, createSubscription } from '../../services/adminApi';
 import AdminLayout from '../../components/admin/AdminLayout';
+import { STATUS_CONFIG } from '../../design-system/constants';
+import buttonStyles from '../../styles/Buttons.module.css';
 
 const GymManagers = () => {
   const [gymManagers, setGymManagers] = useState([]);
@@ -89,13 +91,7 @@ const GymManagers = () => {
   };
 
   const getStatusBadge = (status) => {
-    const statusConfig = {
-      active: { bg: '#ecfdf5', color: '#059669', text: 'نشط' },
-      expired: { bg: '#fef3c7', color: '#d97706', text: 'منتهي' },
-      suspended: { bg: '#fee2e2', color: '#dc2626', text: 'معلق' },
-      cancelled: { bg: '#f3f4f6', color: '#6b7280', text: 'ملغي' }
-    };
-    const config = statusConfig[status] || statusConfig.expired;
+    const config = STATUS_CONFIG[status] || STATUS_CONFIG.expired;
     return (
       <span style={{
         ...styles.badge,
@@ -193,7 +189,7 @@ const GymManagers = () => {
                         <button
                           onClick={() => handleAddSubscription(manager)}
                           style={styles.addButton}
-                          className="actionButton"
+                          className={buttonStyles.actionButton}
                         >
                           <span>➕</span>
                           <span>إضافة اشتراك</span>
@@ -201,7 +197,7 @@ const GymManagers = () => {
                         <button
                           onClick={() => handleDelete(manager._id)}
                           style={styles.deleteButton}
-                          className="deleteButton"
+                          className={buttonStyles.deleteButton}
                         >
                           <span>🗑️</span>
                           <span>حذف</span>

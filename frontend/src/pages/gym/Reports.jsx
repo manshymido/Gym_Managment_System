@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { generateRevenueReport, generateMembersReport, generateAttendanceReport, getAllReports } from '../../services/gymApi';
 import GymLayout from '../../components/gym/GymLayout';
+import buttonStyles from '../../styles/Buttons.module.css';
+import cardStyles from '../../styles/Card.module.css';
 
 const Reports = () => {
   const [reports, setReports] = useState([]);
@@ -66,7 +68,7 @@ const Reports = () => {
           <button 
             onClick={() => handleGenerateReport('revenue')} 
             style={styles.reportButton}
-            className="actionButton"
+            className={buttonStyles.actionButton}
           >
             <span>💰</span>
             <span>تقرير الإيرادات</span>
@@ -74,7 +76,7 @@ const Reports = () => {
           <button 
             onClick={() => handleGenerateReport('members')} 
             style={styles.reportButton}
-            className="actionButton"
+            className={buttonStyles.actionButton}
           >
             <span>👥</span>
             <span>تقرير الأعضاء</span>
@@ -82,7 +84,7 @@ const Reports = () => {
           <button 
             onClick={() => handleGenerateReport('attendance')} 
             style={styles.reportButton}
-            className="actionButton"
+            className={buttonStyles.actionButton}
           >
             <span>✅</span>
             <span>تقرير الحضور</span>
@@ -167,7 +169,7 @@ const Reports = () => {
           ) : (
             <div style={styles.reportsList}>
               {reports.map((report) => (
-                <div key={report._id} style={styles.reportItem} className="statCard">
+                <div key={report._id} style={styles.reportItem} className={cardStyles.statCard}>
                   <div style={styles.reportItemContent}>
                     <div>
                       <h4 style={styles.reportItemTitle}>{report.title}</h4>

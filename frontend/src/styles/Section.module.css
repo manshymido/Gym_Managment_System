@@ -1,0 +1,32 @@
+/* Page Section Styles - أنماط أقسام الصفحات */
+
+.sectionDefault {
+  padding: var(--spacing-3xl) var(--spacing-xl);
+  background-color: var(--color-bg-default);
+}
+
+.sectionPaper {
+  padding: var(--spacing-3xl) var(--spacing-xl);
+  background-color: var(--color-bg-paper);
+}
+
+.sectionContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.sectionTitle {
+  font-size: 2.5rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: var(--spacing-base);
+  color: var(--color-text-primary);
+}
+
+.sectionDescription {
+  font-size: 1.2rem;
+  text-align: center;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-3xl);
+}
+

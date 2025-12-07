@@ -3,6 +3,17 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { getPublicPlanById, publicSubscribe } from '../services/publicApi';
 import { gymManagerLogin } from '../services/gymApi';
+import Card from '../components/common/Card';
+import Input from '../components/common/Input';
+import Button from '../components/common/Button';
+import Select from '../components/common/Select';
+import LoadingSpinner from '../components/common/LoadingSpinner';
+import ErrorMessage from '../components/common/ErrorMessage';
+import layoutStyles from '../styles/Layout.module.css';
+import headerStyles from '../styles/Header.module.css';
+import footerStyles from '../styles/Footer.module.css';
+import formStyles from '../styles/Form.module.css';
+import cardStyles from '../styles/Card.module.css';
 
 const Subscribe = () => {
   const navigate = useNavigate();
@@ -173,44 +184,44 @@ const Subscribe = () => {
 
   if (loading) {
     return (
-      <div style={styles.container}>
-        <div style={styles.loading}>
-          <div style={styles.spinner}></div>
-          <p>جاري التحميل...</p>
-        </div>
+      <div className={layoutStyles.loading}>
+        <LoadingSpinner />
       </div>
     );
   }
 
   if (!plan) {
     return (
-      <div style={styles.container}>
-        <div style={styles.errorCard}>
-          <h2>الباقة غير موجودة</h2>
-          <button onClick={() => navigate('/')} style={styles.button}>
+      <div className={layoutStyles.containerCentered}>
+        <Card className={cardStyles.notFoundCard}>
+          <h2 className={cardStyles.notFoundTitle}>
+            الباقة غير موجودة
+          </h2>
+          <Button onClick={() => navigate('/')}>
             العودة للصفحة الرئيسية
-          </button>
-        </div>
+          </Button>
+        </Card>
       </div>
     );
   }
 
   if (step === 'success') {
     return (
-      <div style={styles.container}>
-        <div style={styles.successCard}>
-          <div style={styles.successIcon}>✓</div>
-          <h2 style={styles.successTitle}>تم الاشتراك بنجاح!</h2>
-          <p style={styles.successMessage}>
+      <div className={layoutStyles.containerCentered}>
+        <Card className={cardStyles.successCard}>
+          <div className={cardStyles.successIcon}>
+            ✓
+          </div>
+          <h2 className={cardStyles.successTitle}>
+            تم الاشتراك بنجاح!
+          </h2>
+          <p className={cardStyles.successMessage}>
             تم تفعيل اشتراكك في باقة {plan.name} بنجاح. يمكنك الآن استخدام جميع الميزات.
           </p>
-          <button
-            onClick={() => navigate('/gym/dashboard')}
-            style={styles.button}
-          >
+          <Button onClick={() => navigate('/gym/dashboard')}>
             الانتقال إلى لوحة التحكم
-          </button>
-        </div>
+          </Button>
+        </Card>
       </div>
     );
   }
@@ -218,18 +229,22 @@ const Subscribe = () => {
   // If user is already logged in as gym_manager, show simplified subscription form
   if (user && userType === 'gym_manager') {
     return (
-      <div style={styles.container}>
-        <div style={styles.card}>
-          <div style={styles.header}>
-            <h2 style={styles.title}>الاشتراك في باقة {plan.name}</h2>
-            <div style={styles.planSummary}>
-              <div style={styles.summaryRow}>
+      <div className={layoutStyles.containerCentered}>
+        <Card className={cardStyles.cardLarge}>
+          <div className={headerStyles.sectionHeader}>
+            <h2 className={headerStyles.titleCentered}>
+              الاشتراك في باقة {plan.name}
+            </h2>
+            <div className={cardStyles.planSummary}>
+              <div className={cardStyles.summaryRow}>
                 <span>السعر:</span>
-                <span style={styles.summaryValue}>{plan.price} جنيه</span>
+                <span className={cardStyles.summaryValue}>
+                  {plan.price} جنيه
+                </span>
               </div>
-              <div style={styles.summaryRow}>
+              <div className={cardStyles.summaryRow}>
                 <span>المدة:</span>
-                <span style={styles.summaryValue}>
+                <span className={cardStyles.summaryValue}>
                   {plan.duration}{' '}
                   {plan.durationUnit === 'months'
                     ? 'شهر'
@@ -239,77 +254,91 @@ const Subscribe = () => {
                 </span>
               </div>
             </div>
-            <div style={styles.userInfo}>
-              <p style={styles.userInfoText}>
+            <div className={cardStyles.userInfo}>
+              <p className={cardStyles.userInfoText}>
                 مسجل دخول كـ: <strong>{user.name}</strong> ({user.email})
               </p>
             </div>
           </div>
 
-          {error && <div style={styles.error}>{error}</div>}
+          <ErrorMessage message={error} />
 
-          <form onSubmit={handleSubscribeAsLoggedIn} style={styles.form}>
-            <h3 style={styles.formTitle}>إتمام الاشتراك</h3>
-            <div style={styles.formGroup}>
-              <label htmlFor="paymentMethod">طريقة الدفع *</label>
-              <select
-                id="paymentMethod"
-                name="paymentMethod"
-                value={formData.paymentMethod}
-                onChange={handleChange}
-                required
-                style={styles.input}
-              >
-                <option value="local">دفع محلي</option>
-                <option value="stripe">Stripe</option>
-                <option value="paypal">PayPal</option>
-              </select>
-            </div>
-            <div style={styles.checkboxGroup}>
+          <form onSubmit={handleSubscribeAsLoggedIn} className={formStyles.form}>
+            <h3 className={formStyles.formTitle}>
+              إتمام الاشتراك
+            </h3>
+            <Select
+              id="paymentMethod"
+              name="paymentMethod"
+              label="طريقة الدفع"
+              value={formData.paymentMethod}
+              onChange={handleChange}
+              required
+              options={[
+                { value: 'local', label: 'دفع محلي' },
+                { value: 'stripe', label: 'Stripe' },
+                { value: 'paypal', label: 'PayPal' }
+              ]}
+            />
+            <div className={formStyles.checkboxGroup}>
               <input
                 id="autoRenew"
                 name="autoRenew"
                 type="checkbox"
                 checked={formData.autoRenew}
                 onChange={handleChange}
-                style={styles.checkbox}
+                className={formStyles.checkbox}
               />
-              <label htmlFor="autoRenew">تجديد تلقائي للاشتراك</label>
+              <label htmlFor="autoRenew" className={formStyles.checkboxLabel}>
+                تجديد تلقائي للاشتراك
+              </label>
             </div>
-            <button type="submit" disabled={submitting} style={styles.button}>
+            <Button
+              type="submit"
+              disabled={submitting}
+              fullWidth
+              style={{ marginTop: 'var(--spacing-sm)' }}
+            >
               {submitting ? 'جاري المعالجة...' : 'إتمام الاشتراك'}
-            </button>
+            </Button>
           </form>
 
-          <div style={styles.footer}>
-            <button onClick={() => navigate('/')} style={styles.linkButton}>
+          <div className={footerStyles.sectionFooter}>
+            <Button
+              variant="secondary"
+              onClick={() => navigate('/')}
+            >
               العودة للصفحة الرئيسية
-            </button>
-            <button 
-              onClick={() => navigate('/gym/dashboard')} 
-              style={styles.linkButton}
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={() => navigate('/gym/dashboard')}
             >
               الذهاب إلى لوحة التحكم
-            </button>
+            </Button>
           </div>
-        </div>
+        </Card>
       </div>
     );
   }
 
   return (
-    <div style={styles.container}>
-      <div style={styles.card}>
-        <div style={styles.header}>
-          <h2 style={styles.title}>الاشتراك في باقة {plan.name}</h2>
-          <div style={styles.planSummary}>
-            <div style={styles.summaryRow}>
+    <div className={layoutStyles.containerCentered}>
+      <Card className={cardStyles.cardLarge}>
+        <div className={headerStyles.sectionHeader}>
+          <h2 className={headerStyles.titleCentered}>
+            الاشتراك في باقة {plan.name}
+          </h2>
+          <div className={cardStyles.planSummary}>
+            <div className={cardStyles.summaryRow}>
               <span>السعر:</span>
-              <span style={styles.summaryValue}>{plan.price} جنيه</span>
+              <span className={cardStyles.summaryValue}>
+                {plan.price} جنيه
+              </span>
             </div>
-            <div style={styles.summaryRow}>
+            <div className={cardStyles.summaryRow}>
               <span>المدة:</span>
-              <span style={styles.summaryValue}>
+              <span className={cardStyles.summaryValue}>
                 {plan.duration}{' '}
                 {plan.durationUnit === 'months'
                   ? 'شهر'
@@ -321,374 +350,174 @@ const Subscribe = () => {
           </div>
         </div>
 
-        {error && <div style={styles.error}>{error}</div>}
+        <ErrorMessage message={error} />
 
         {step === 'login' ? (
-          <form onSubmit={handleLogin} style={styles.form}>
-            <h3 style={styles.formTitle}>تسجيل الدخول</h3>
-            <div style={styles.formGroup}>
-              <label htmlFor="loginEmail">البريد الإلكتروني *</label>
-              <input
-                id="loginEmail"
-                name="email"
-                type="email"
-                value={loginData.email}
-                onChange={handleLoginChange}
-                required
-                style={styles.input}
-                placeholder="example@gym.com"
-              />
-            </div>
-            <div style={styles.formGroup}>
-              <label htmlFor="loginPassword">كلمة المرور *</label>
-              <input
-                id="loginPassword"
-                name="password"
-                type="password"
-                value={loginData.password}
-                onChange={handleLoginChange}
-                required
-                style={styles.input}
-                placeholder="كلمة المرور"
-              />
-            </div>
-            <button type="submit" disabled={submitting} style={styles.button}>
+          <form onSubmit={handleLogin} className={formStyles.form}>
+            <h3 className={formStyles.formTitle}>
+              تسجيل الدخول
+            </h3>
+            <Input
+              id="loginEmail"
+              name="email"
+              type="email"
+              label="البريد الإلكتروني"
+              value={loginData.email}
+              onChange={handleLoginChange}
+              required
+              placeholder="example@gym.com"
+            />
+            <Input
+              id="loginPassword"
+              name="password"
+              type="password"
+              label="كلمة المرور"
+              value={loginData.password}
+              onChange={handleLoginChange}
+              required
+              placeholder="كلمة المرور"
+            />
+            <Button
+              type="submit"
+              disabled={submitting}
+              fullWidth
+            >
               {submitting ? 'جاري المعالجة...' : 'تسجيل الدخول والاشتراك'}
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
+              variant="secondary"
               onClick={() => setStep('form')}
-              style={styles.secondaryButton}
+              fullWidth
             >
               إنشاء حساب جديد
-            </button>
+            </Button>
           </form>
         ) : (
-          <form onSubmit={handleSubmit} style={styles.form}>
-            <h3 style={styles.formTitle}>إنشاء حساب جديد والاشتراك</h3>
-            <div style={styles.formRow}>
-              <div style={styles.formGroup}>
-                <label htmlFor="name">الاسم *</label>
-                <input
-                  id="name"
-                  name="name"
-                  type="text"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                  style={styles.input}
-                  placeholder="أدخل اسمك الكامل"
-                />
-              </div>
-              <div style={styles.formGroup}>
-                <label htmlFor="gymName">اسم الجيم *</label>
-                <input
-                  id="gymName"
-                  name="gymName"
-                  type="text"
-                  value={formData.gymName}
-                  onChange={handleChange}
-                  required
-                  style={styles.input}
-                  placeholder="أدخل اسم الجيم"
-                />
-              </div>
-            </div>
-            <div style={styles.formRow}>
-              <div style={styles.formGroup}>
-                <label htmlFor="email">البريد الإلكتروني *</label>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                  style={styles.input}
-                  placeholder="example@gym.com"
-                />
-              </div>
-              <div style={styles.formGroup}>
-                <label htmlFor="password">كلمة المرور *</label>
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  required
-                  minLength={6}
-                  style={styles.input}
-                  placeholder="6 أحرف على الأقل"
-                />
-              </div>
-            </div>
-            <div style={styles.formRow}>
-              <div style={styles.formGroup}>
-                <label htmlFor="phone">رقم الهاتف</label>
-                <input
-                  id="phone"
-                  name="phone"
-                  type="tel"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  style={styles.input}
-                  placeholder="رقم الهاتف (اختياري)"
-                />
-              </div>
-              <div style={styles.formGroup}>
-                <label htmlFor="paymentMethod">طريقة الدفع *</label>
-                <select
-                  id="paymentMethod"
-                  name="paymentMethod"
-                  value={formData.paymentMethod}
-                  onChange={handleChange}
-                  required
-                  style={styles.input}
-                >
-                  <option value="local">دفع محلي</option>
-                  <option value="stripe">Stripe</option>
-                  <option value="paypal">PayPal</option>
-                </select>
-              </div>
-            </div>
-            <div style={styles.formGroup}>
-              <label htmlFor="address">العنوان</label>
-              <input
-                id="address"
-                name="address"
+          <form onSubmit={handleSubmit} className={formStyles.form}>
+            <h3 className={formStyles.formTitle}>
+              إنشاء حساب جديد والاشتراك
+            </h3>
+            <div className={formStyles.formRow}>
+              <Input
+                id="name"
+                name="name"
                 type="text"
-                value={formData.address}
+                label="الاسم"
+                value={formData.name}
                 onChange={handleChange}
-                style={styles.input}
-                placeholder="عنوان الجيم (اختياري)"
+                required
+                placeholder="أدخل اسمك الكامل"
+              />
+              <Input
+                id="gymName"
+                name="gymName"
+                type="text"
+                label="اسم الجيم"
+                value={formData.gymName}
+                onChange={handleChange}
+                required
+                placeholder="أدخل اسم الجيم"
               />
             </div>
-            <div style={styles.checkboxGroup}>
+            <div className={formStyles.formRow}>
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                label="البريد الإلكتروني"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                placeholder="example@gym.com"
+              />
+              <Input
+                id="password"
+                name="password"
+                type="password"
+                label="كلمة المرور"
+                value={formData.password}
+                onChange={handleChange}
+                required
+                minLength={6}
+                placeholder="6 أحرف على الأقل"
+              />
+            </div>
+            <div className={formStyles.formRow}>
+              <Input
+                id="phone"
+                name="phone"
+                type="tel"
+                label="رقم الهاتف"
+                value={formData.phone}
+                onChange={handleChange}
+                placeholder="رقم الهاتف (اختياري)"
+              />
+              <Select
+                id="paymentMethod"
+                name="paymentMethod"
+                label="طريقة الدفع"
+                value={formData.paymentMethod}
+                onChange={handleChange}
+                required
+                options={[
+                  { value: 'local', label: 'دفع محلي' },
+                  { value: 'stripe', label: 'Stripe' },
+                  { value: 'paypal', label: 'PayPal' }
+                ]}
+              />
+            </div>
+            <Input
+              id="address"
+              name="address"
+              type="text"
+              label="العنوان"
+              value={formData.address}
+              onChange={handleChange}
+              placeholder="عنوان الجيم (اختياري)"
+            />
+            <div className={formStyles.checkboxGroup}>
               <input
                 id="autoRenew"
                 name="autoRenew"
                 type="checkbox"
                 checked={formData.autoRenew}
                 onChange={handleChange}
-                style={styles.checkbox}
+                className={formStyles.checkbox}
               />
-              <label htmlFor="autoRenew">تجديد تلقائي للاشتراك</label>
+              <label htmlFor="autoRenew" className={formStyles.checkboxLabel}>
+                تجديد تلقائي للاشتراك
+              </label>
             </div>
-            <button type="submit" disabled={submitting} style={styles.button}>
+            <Button
+              type="submit"
+              disabled={submitting}
+              fullWidth
+            >
               {submitting ? 'جاري المعالجة...' : 'إتمام الاشتراك'}
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
+              variant="secondary"
               onClick={() => setStep('login')}
-              style={styles.secondaryButton}
+              fullWidth
             >
               لدي حساب بالفعل - تسجيل الدخول
-            </button>
+            </Button>
           </form>
         )}
 
-        <div style={styles.footer}>
-          <button onClick={() => navigate('/')} style={styles.linkButton}>
+        <div className={footerStyles.sectionFooterSimple}>
+          <Button
+            variant="secondary"
+            onClick={() => navigate('/')}
+          >
             العودة للصفحة الرئيسية
-          </button>
+          </Button>
         </div>
-      </div>
+      </Card>
     </div>
   );
-};
-
-const styles = {
-  container: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    minHeight: '100vh',
-    backgroundColor: '#f5f5f5',
-    padding: '2rem 1rem'
-  },
-  card: {
-    backgroundColor: 'white',
-    padding: '2.5rem',
-    borderRadius: '12px',
-    boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
-    width: '100%',
-    maxWidth: '700px'
-  },
-  header: {
-    marginBottom: '2rem'
-  },
-  title: {
-    fontSize: '1.75rem',
-    fontWeight: 'bold',
-    marginBottom: '1rem',
-    color: '#333',
-    textAlign: 'center'
-  },
-  planSummary: {
-    backgroundColor: '#f8f9fa',
-    padding: '1rem',
-    borderRadius: '8px',
-    marginTop: '1rem'
-  },
-  summaryRow: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    marginBottom: '0.5rem',
-    fontSize: '1rem'
-  },
-  summaryValue: {
-    fontWeight: 'bold',
-    color: '#667eea'
-  },
-  userInfo: {
-    marginTop: '1rem',
-    padding: '0.75rem',
-    backgroundColor: '#e7f3ff',
-    borderRadius: '6px',
-    border: '1px solid #b3d9ff'
-  },
-  userInfoText: {
-    margin: 0,
-    fontSize: '0.95rem',
-    color: '#0066cc'
-  },
-  form: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '1.25rem'
-  },
-  formTitle: {
-    fontSize: '1.25rem',
-    fontWeight: 'bold',
-    marginBottom: '1rem',
-    color: '#333'
-  },
-  formRow: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-    gap: '1rem'
-  },
-  formGroup: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '0.5rem'
-  },
-  input: {
-    padding: '0.875rem',
-    border: '1px solid #ddd',
-    borderRadius: '6px',
-    fontSize: '1rem',
-    transition: 'border-color 0.3s ease',
-    fontFamily: 'inherit'
-  },
-  checkboxGroup: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '0.5rem'
-  },
-  checkbox: {
-    width: '18px',
-    height: '18px',
-    cursor: 'pointer'
-  },
-  button: {
-    padding: '0.875rem',
-    backgroundColor: '#667eea',
-    color: 'white',
-    border: 'none',
-    borderRadius: '6px',
-    fontSize: '1rem',
-    fontWeight: 'bold',
-    cursor: 'pointer',
-    marginTop: '0.5rem',
-    transition: 'background-color 0.3s ease'
-  },
-  secondaryButton: {
-    padding: '0.875rem',
-    backgroundColor: 'transparent',
-    color: '#667eea',
-    border: '2px solid #667eea',
-    borderRadius: '6px',
-    fontSize: '1rem',
-    fontWeight: 'bold',
-    cursor: 'pointer',
-    marginTop: '0.5rem',
-    transition: 'all 0.3s ease'
-  },
-  error: {
-    backgroundColor: '#fee',
-    color: '#c33',
-    padding: '0.875rem',
-    borderRadius: '6px',
-    marginBottom: '1rem',
-    textAlign: 'center'
-  },
-  footer: {
-    marginTop: '2rem',
-    textAlign: 'center'
-  },
-  linkButton: {
-    background: 'none',
-    border: 'none',
-    color: '#667eea',
-    cursor: 'pointer',
-    textDecoration: 'underline',
-    fontSize: '0.9rem'
-  },
-  loading: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    gap: '1rem'
-  },
-  spinner: {
-    width: '40px',
-    height: '40px',
-    border: '4px solid #e5e7eb',
-    borderTop: '4px solid #667eea',
-    borderRadius: '50%',
-    animation: 'spin 1s linear infinite'
-  },
-  errorCard: {
-    backgroundColor: 'white',
-    padding: '2.5rem',
-    borderRadius: '12px',
-    boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
-    textAlign: 'center'
-  },
-  successCard: {
-    backgroundColor: 'white',
-    padding: '3rem',
-    borderRadius: '12px',
-    boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
-    textAlign: 'center',
-    maxWidth: '500px'
-  },
-  successIcon: {
-    width: '80px',
-    height: '80px',
-    borderRadius: '50%',
-    backgroundColor: '#10b981',
-    color: 'white',
-    fontSize: '3rem',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    margin: '0 auto 1.5rem'
-  },
-  successTitle: {
-    fontSize: '2rem',
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: '1rem'
-  },
-  successMessage: {
-    fontSize: '1.1rem',
-    color: '#666',
-    marginBottom: '2rem',
-    lineHeight: 1.6
-  }
 };
 
 export default Subscribe;

@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import AdminLayout from '../../components/admin/AdminLayout';
 import { getAllGymManagers, getAllSubscriptions, getRevenueStats } from '../../services/adminApi';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
@@ -7,6 +8,7 @@ import Button from '../../components/common/Button';
 import { colors, spacing } from '../../design-system/theme';
 
 const AdminDashboard = () => {
+  const navigate = useNavigate();
   const [stats, setStats] = useState({
     totalGymManagers: 0,
     activeSubscriptions: 0,
@@ -37,7 +39,7 @@ const AdminDashboard = () => {
     }
   };
 
-  const statCards = [
+  const statCards = useMemo(() => [
     {
       title: 'إجمالي مديري الجيمات',
       value: stats.totalGymManagers,
@@ -59,7 +61,7 @@ const AdminDashboard = () => {
       gradient: colors.warning.gradient,
       bgColor: colors.warning.light
     }
-  ];
+  ], [stats.totalGymManagers, stats.activeSubscriptions, stats.totalRevenue]);
 
   if (loading) {
     return (
@@ -161,14 +163,14 @@ const AdminDashboard = () => {
             <Button
               variant="secondary"
               icon="👥"
-              onClick={() => window.location.href = '/admin/gym-managers'}
+              onClick={() => navigate('/admin/gym-managers')}
             >
               إدارة مديري الجيمات
             </Button>
             <Button
               variant="secondary"
               icon="📋"
-              onClick={() => window.location.href = '/admin/subscriptions'}
+              onClick={() => navigate('/admin/subscriptions')}
             >
               إدارة الاشتراكات
             </Button>

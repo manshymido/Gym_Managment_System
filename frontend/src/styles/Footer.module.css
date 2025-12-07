@@ -1,0 +1,59 @@
+/* Footer Styles */
+
+/* Main Footer (for Home page) */
+.footer {
+  background-color: var(--color-gray-800);
+  color: white;
+  padding: var(--spacing-xl);
+  text-align: center;
+}
+
+.footerText {
+  margin: 0;
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+/* Section Footer (for forms, cards, etc.) */
+.sectionFooter {
+  margin-top: var(--spacing-xl);
+  text-align: center;
+  display: flex;
+  gap: var(--spacing-base);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.sectionFooterSimple {
+  margin-top: var(--spacing-xl);
+  text-align: center;
+}
+
+.footerTextSecondary {
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+  margin-bottom: var(--spacing-sm);
+}
+
+.footerLink {
+  color: var(--color-primary);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color var(--transition-base);
+}
+
+.footerLink:hover {
+  color: var(--color-primary-dark);
+  text-decoration: underline;
+}
+
+.footerLinkWhite {
+  color: white;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.footerLinkWhite:hover {
+  opacity: 0.9;
+}
+

@@ -1,0 +1,36 @@
+/* Button Styles - أنماط الأزرار المستخدمة في عدة أماكن */
+
+.actionButton {
+  transition: var(--transition-base);
+}
+
+.actionButton:hover {
+  border-color: var(--color-primary);
+  background-color: var(--color-bg-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.deleteButton {
+  transition: var(--transition-base);
+}
+
+.deleteButton:hover {
+  background-color: var(--color-danger-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
+}
+
+.globalButton {
+  transition: var(--transition-base);
+}
+
+.globalButton:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.globalButton:active:not(:disabled) {
+  transform: translateY(0);
+}
+

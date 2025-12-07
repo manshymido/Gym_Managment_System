@@ -1,0 +1,85 @@
+/* Header Styles */
+
+/* Main Header (for Home page) */
+.header {
+  background-color: var(--color-bg-paper);
+  box-shadow: var(--shadow-sm);
+  padding: var(--spacing-base) 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.headerContent {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-xl);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logoContainer {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.logoContainer:hover {
+  transform: scale(1.05);
+}
+
+.logoIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  background: var(--color-primary-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  flex-shrink: 0;
+}
+
+.logoText {
+  font-size: 1.5rem;
+  font-weight: 700;
+  background: var(--color-primary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0;
+  letter-spacing: -0.5px;
+}
+
+.nav {
+  display: flex;
+  gap: var(--spacing-base);
+}
+
+/* Section Header (for forms, cards, etc.) */
+.sectionHeader {
+  margin-bottom: var(--spacing-xl);
+}
+
+.sectionHeaderCentered {
+  text-align: center;
+  margin-bottom: var(--spacing-xl);
+}
+
+.titleCentered {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: var(--spacing-base);
+  color: var(--color-text-primary);
+  text-align: center;
+}
+
+.subtitle {
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+}
+

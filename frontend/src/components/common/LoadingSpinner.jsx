@@ -38,5 +38,5 @@ const LoadingSpinner = ({
   );
 };
 
-export default LoadingSpinner;
+export default React.memo(LoadingSpinner);
 

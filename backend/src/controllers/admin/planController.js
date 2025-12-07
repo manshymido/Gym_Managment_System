@@ -1,83 +1,70 @@
 import SubscriptionPlan from '../../models/SubscriptionPlan.js';
+import { asyncHandler } from '../../utils/asyncHandler.js';
 
-export const getAllPlans = async (req, res) => {
-  try {
-    const { isActive } = req.query;
-    const query = {};
-    if (isActive !== undefined) {
-      query.isActive = isActive === 'true';
-    }
-
-    const plans = await SubscriptionPlan.find(query).sort({ price: 1 });
-    res.json(plans);
-  } catch (error) {
-    res.status(500).json({ message: 'خطأ في جلب البيانات', error: error.message });
+export const getAllPlans = asyncHandler(async (req, res) => {
+  const { isActive } = req.query;
+  const query = {};
+  if (isActive !== undefined) {
+    query.isActive = isActive === 'true';
   }
-};
 
-export const getPlanById = async (req, res) => {
-  try {
-    const plan = await SubscriptionPlan.findById(req.params.id);
+  const plans = await SubscriptionPlan.find(query).sort({ price: 1 });
+  res.json(plans);
+});
 
-    if (!plan) {
-      return res.status(404).json({ message: 'الباقة غير موجودة' });
-    }
+export const getPlanById = asyncHandler(async (req, res) => {
+  const plan = await SubscriptionPlan.findById(req.params.id);
 
-    res.json(plan);
-  } catch (error) {
-    res.status(500).json({ message: 'خطأ في جلب البيانات', error: error.message });
+  if (!plan) {
+    const error = new Error('الباقة غير موجودة');
+    error.status = 404;
+    throw error;
   }
-};
 
-export const createPlan = async (req, res) => {
-  try {
-    const { name, description, price, duration, durationUnit, features, maxMembers } = req.body;
+  res.json(plan);
+});
 
-    const plan = await SubscriptionPlan.create({
-      name,
-      description,
-      price,
-      duration,
-      durationUnit,
-      features: features || [],
-      maxMembers: maxMembers || -1
-    });
+export const createPlan = asyncHandler(async (req, res) => {
+  const { name, description, price, duration, durationUnit, features, maxMembers } = req.body;
 
-    res.status(201).json({ message: 'تم إنشاء الباقة بنجاح', plan });
-  } catch (error) {
-    res.status(500).json({ message: 'خطأ في إنشاء الباقة', error: error.message });
+  const plan = await SubscriptionPlan.create({
+    name,
+    description,
+    price,
+    duration,
+    durationUnit,
+    features: features || [],
+    maxMembers: maxMembers || -1
+  });
+
+  res.status(201).json({ message: 'تم إنشاء الباقة بنجاح', plan });
+});
+
+export const updatePlan = asyncHandler(async (req, res) => {
+  const plan = await SubscriptionPlan.findByIdAndUpdate(
+    req.params.id,
+    req.body,
+    { new: true, runValidators: true }
+  );
+
+  if (!plan) {
+    const error = new Error('الباقة غير موجودة');
+    error.status = 404;
+    throw error;
   }
-};
 
-export const updatePlan = async (req, res) => {
-  try {
-    const plan = await SubscriptionPlan.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true, runValidators: true }
-    );
+  res.json({ message: 'تم التحديث بنجاح', plan });
+});
 
-    if (!plan) {
-      return res.status(404).json({ message: 'الباقة غير موجودة' });
-    }
+export const deletePlan = asyncHandler(async (req, res) => {
+  const plan = await SubscriptionPlan.findByIdAndDelete(req.params.id);
 
-    res.json({ message: 'تم التحديث بنجاح', plan });
-  } catch (error) {
-    res.status(500).json({ message: 'خطأ في التحديث', error: error.message });
+  if (!plan) {
+    const error = new Error('الباقة غير موجودة');
+    error.status = 404;
+    throw error;
   }
-};
 
-export const deletePlan = async (req, res) => {
-  try {
-    const plan = await SubscriptionPlan.findByIdAndDelete(req.params.id);
-
-    if (!plan) {
-      return res.status(404).json({ message: 'الباقة غير موجودة' });
-    }
-
-    res.json({ message: 'تم الحذف بنجاح' });
-  } catch (error) {
-    res.status(500).json({ message: 'خطأ في الحذف', error: error.message });
-  }
-};
+  res.json({ message: 'تم الحذف بنجاح' });
+});
 

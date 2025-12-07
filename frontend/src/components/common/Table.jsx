@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { colors, borderRadius, shadows } from '../../design-system/theme';
 
 const Table = ({
@@ -10,24 +10,26 @@ const Table = ({
   onRowClick,
   ...props
 }) => {
-  const tableContainerStyle = {
+  const [hoveredRowIndex, setHoveredRowIndex] = useState(null);
+
+  const tableContainerStyle = useMemo(() => ({
     backgroundColor: colors.background.paper,
     borderRadius: borderRadius.lg,
     overflow: 'hidden',
     boxShadow: shadows.base
-  };
+  }), []);
 
-  const tableStyle = {
+  const tableStyle = useMemo(() => ({
     width: '100%',
     borderCollapse: 'collapse'
-  };
+  }), []);
 
-  const headerRowStyle = {
+  const headerRowStyle = useMemo(() => ({
     backgroundColor: colors.gray[50],
     borderBottom: `2px solid ${colors.gray[200]}`
-  };
+  }), []);
 
-  const headerCellStyle = {
+  const headerCellStyle = useMemo(() => ({
     padding: '1.25rem 1.5rem',
     textAlign: 'right',
     fontSize: '0.875rem',
@@ -35,55 +37,60 @@ const Table = ({
     color: colors.text.secondary,
     textTransform: 'uppercase',
     letterSpacing: '0.05em'
-  };
+  }), []);
 
-  const rowStyle = {
-    transition: 'background-color 0.2s ease',
-    cursor: onRowClick ? 'pointer' : 'default'
-  };
-
-  const cellStyle = {
+  const cellStyle = useMemo(() => ({
     padding: '1.25rem 1.5rem',
     fontSize: '0.9375rem',
     color: colors.text.primary,
     borderBottom: `1px solid ${colors.gray[100]}`
-  };
+  }), []);
 
-  const emptyCellStyle = {
+  const emptyCellStyle = useMemo(() => ({
     padding: '4rem 2rem',
     textAlign: 'center'
-  };
+  }), []);
 
-  const emptyStateStyle = {
+  const emptyStateStyle = useMemo(() => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     gap: '1rem',
     color: colors.gray[400]
-  };
+  }), []);
 
-  const emptyIconStyle = {
+  const emptyIconStyle = useMemo(() => ({
     fontSize: '3rem',
     opacity: 0.5
-  };
+  }), []);
 
-  const handleRowClick = (row, index) => {
+  const handleRowClick = useCallback((row, index) => {
     if (onRowClick) {
       onRowClick(row, index);
     }
-  };
+  }, [onRowClick]);
 
-  const handleRowMouseEnter = (e) => {
+  const handleRowMouseEnter = useCallback((index) => {
     if (onRowClick) {
-      e.currentTarget.style.backgroundColor = colors.gray[50];
+      setHoveredRowIndex(index);
     }
-  };
+  }, [onRowClick]);
 
-  const handleRowMouseLeave = (e) => {
+  const handleRowMouseLeave = useCallback(() => {
     if (onRowClick) {
-      e.currentTarget.style.backgroundColor = '';
+      setHoveredRowIndex(null);
     }
-  };
+  }, [onRowClick]);
+
+  const getRowStyle = useCallback((rowIndex) => ({
+    transition: 'background-color 0.2s ease',
+    cursor: onRowClick ? 'pointer' : 'default',
+    backgroundColor: hoveredRowIndex === rowIndex 
+      ? colors.gray[50] 
+      : rowIndex % 2 === 0 
+        ? colors.background.paper 
+        : colors.gray[50]
+  }), [hoveredRowIndex, onRowClick]);
 
   return (
     <div style={tableContainerStyle} {...props}>
@@ -116,12 +123,9 @@ const Table = ({
               return (
                 <tr
                   key={row.id || row._id || rowIndex}
-                  style={{
-                    ...rowStyle,
-                    backgroundColor: rowIndex % 2 === 0 ? colors.background.paper : colors.gray[50]
-                  }}
+                  style={getRowStyle(rowIndex)}
                   onClick={() => handleRowClick(row, rowIndex)}
-                  onMouseEnter={handleRowMouseEnter}
+                  onMouseEnter={() => handleRowMouseEnter(rowIndex)}
                   onMouseLeave={handleRowMouseLeave}
                 >
                   {columns.map((column, colIndex) => (
@@ -141,5 +145,5 @@ const Table = ({
   );
 };
 
-export default Table;
+export default React.memo(Table);
 

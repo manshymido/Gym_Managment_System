@@ -89,87 +89,16 @@ body {
   --transition-fast: 0.15s ease;
   --transition-base: 0.2s ease;
   --transition-slow: 0.3s ease;
-}
-
-/* Button hover effects */
-button:hover:not(:disabled) {
-  opacity: 0.9;
-  transform: translateY(-1px);
-}
-
-button:active:not(:disabled) {
-  transform: translateY(0);
-}
-
-/* Link styles */
-a {
-  transition: color 0.3s ease;
-}
-
-a:hover {
-  opacity: 0.8;
-}
-
-/* Input focus styles */
-input:focus,
-textarea:focus,
-select:focus {
-  outline: none;
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  
+  /* Gradients */
+  --color-primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --color-success-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
 }
 
 /* Spinner animation */
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
-}
-
-/* Card hover effects */
-.statCard:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
-}
-
-/* Action button hover effects */
-.actionButton:hover {
-  border-color: var(--color-primary);
-  background-color: var(--color-bg-hover);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
-}
-
-/* Nav button hover effects */
-button.navButton:hover:not(.navButtonActive) {
-  background-color: var(--color-gray-100);
-  color: var(--color-text-primary);
-}
-
-/* Logout button hover */
-.logoutButton:hover {
-  background-color: var(--color-danger-dark);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
-}
-
-/* Delete button hover */
-.deleteButton:hover {
-  background-color: var(--color-danger-dark);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
-}
-
-/* Search input focus */
-input[type="text"]:focus,
-input[type="email"]:focus,
-input[type="tel"]:focus,
-input[type="date"]:focus,
-input[type="number"]:focus,
-select:focus,
-textarea:focus {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-  outline: none;
 }
 
 /* Responsive adjustments */
