@@ -1,5 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { getAllMembers, createMember, updateMember, deleteMember } from '../../services/gymApi';
+import React, { useState, useMemo, useCallback } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { useMembers } from '../../hooks/useMembers';
+import { useNotification } from '../../context/NotificationContext';
 import GymLayout from '../../components/gym/GymLayout';
 import PageHeader from '../../components/common/PageHeader';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
@@ -13,55 +17,60 @@ import Badge from '../../components/common/Badge';
 import Modal from '../../components/common/Modal';
 import { spacing } from '../../design-system/theme';
 
+// Validation schema
+const memberSchema = z.object({
+  name: z.string().min(2, 'الاسم يجب أن يكون على الأقل حرفين'),
+  email: z.string().email('البريد الإلكتروني غير صحيح').optional().or(z.literal('')),
+  phone: z.string().min(10, 'رقم الهاتف يجب أن يكون على الأقل 10 أرقام'),
+  dateOfBirth: z.string().optional(),
+  gender: z.enum(['male', 'female', '']).optional(),
+  address: z.string().optional()
+});
+
 const Members = () => {
-  const [members, setMembers] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { members, loading, addMember, editMember, removeMember, isAdding, isUpdating, isDeleting } = useMembers();
+  const { success: showSuccess, error: showError } = useNotification();
   const [showForm, setShowForm] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteMemberId, setDeleteMemberId] = useState(null);
   const [editingMember, setEditingMember] = useState(null);
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    dateOfBirth: '',
-    gender: '',
-    address: ''
+
+  const {
+    register,
+    handleSubmit: formHandleSubmit,
+    reset,
+    formState: { errors }
+  } = useForm({
+    resolver: zodResolver(memberSchema),
+    defaultValues: {
+      name: '',
+      email: '',
+      phone: '',
+      dateOfBirth: '',
+      gender: '',
+      address: ''
+    }
   });
 
-  useEffect(() => {
-    fetchMembers();
-  }, []);
-
-  const fetchMembers = async () => {
-    try {
-      const response = await getAllMembers();
-      setMembers(response.data.members || []);
-    } catch (error) {
-      console.error('Error fetching members:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const onSubmit = async (data, e) => {
     try {
       if (editingMember) {
-        await updateMember(editingMember._id, formData);
+        await editMember(editingMember._id, data);
+        showSuccess('تم تحديث العضو بنجاح');
       } else {
-        await createMember(formData);
+        await addMember(data);
+        showSuccess('تم إضافة العضو بنجاح');
       }
-      fetchMembers();
       resetForm();
     } catch (error) {
-      console.error('Error saving member:', error);
+      const errorMessage = error.message || 'حدث خطأ أثناء حفظ العضو';
+      showError(errorMessage);
     }
   };
 
-  const handleEdit = (member) => {
+  const handleEdit = useCallback((member) => {
     setEditingMember(member);
-    setFormData({
+    reset({
       name: member.name || '',
       email: member.email || '',
       phone: member.phone || '',
@@ -70,28 +79,29 @@ const Members = () => {
       address: member.address || ''
     });
     setShowForm(true);
-  };
+  }, [reset]);
 
-  const handleDeleteClick = (id) => {
+  const handleDeleteClick = useCallback((id) => {
     setDeleteMemberId(id);
     setShowDeleteModal(true);
-  };
+  }, []);
 
-  const handleDeleteConfirm = async () => {
+  const handleDeleteConfirm = useCallback(async () => {
     if (deleteMemberId) {
       try {
-        await deleteMember(deleteMemberId);
-        fetchMembers();
+        await removeMember(deleteMemberId);
+        showSuccess('تم حذف العضو بنجاح');
         setShowDeleteModal(false);
         setDeleteMemberId(null);
       } catch (error) {
-        console.error('Error deleting member:', error);
+        const errorMessage = error.message || 'حدث خطأ أثناء حذف العضو';
+        showError(errorMessage);
       }
     }
-  };
+  }, [deleteMemberId, removeMember, showSuccess, showError]);
 
-  const resetForm = () => {
-    setFormData({
+  const resetForm = useCallback(() => {
+    reset({
       name: '',
       email: '',
       phone: '',
@@ -101,9 +111,9 @@ const Members = () => {
     });
     setEditingMember(null);
     setShowForm(false);
-  };
+  }, [reset]);
 
-  const columns = [
+  const columns = useMemo(() => [
     {
       key: 'name',
       label: 'الاسم',
@@ -160,7 +170,7 @@ const Members = () => {
         </div>
       )
     }
-  ];
+  ], [handleEdit, handleDeleteClick]);
 
   if (loading) {
     return (
@@ -193,22 +203,20 @@ const Members = () => {
             title={editingMember ? 'تعديل العضو' : 'إضافة عضو جديد'}
             style={{ marginBottom: spacing.xl }}
           >
-            <Form onSubmit={handleSubmit}>
+            <Form handleSubmit={formHandleSubmit} onSubmit={onSubmit}>
               <Form.Row>
-                <Form.Group label="الاسم" required>
+                <Form.Group label="الاسم" required name="name" error={errors.name?.message}>
                   <Input
                     type="text"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    {...register('name')}
                     required
                     placeholder="اسم العضو الكامل"
                   />
                 </Form.Group>
-                <Form.Group label="الهاتف" required>
+                <Form.Group label="الهاتف" required name="phone" error={errors.phone?.message}>
                   <Input
                     type="tel"
-                    value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    {...register('phone')}
                     required
                     placeholder="رقم الهاتف"
                   />
@@ -216,18 +224,16 @@ const Members = () => {
               </Form.Row>
               
               <Form.Row>
-                <Form.Group label="البريد الإلكتروني">
+                <Form.Group label="البريد الإلكتروني" name="email" error={errors.email?.message}>
                   <Input
                     type="email"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    {...register('email')}
                     placeholder="example@email.com"
                   />
                 </Form.Group>
-                <Form.Group label="الجنس">
+                <Form.Group label="الجنس" name="gender" error={errors.gender?.message}>
                   <Select
-                    value={formData.gender}
-                    onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
+                    {...register('gender')}
                     placeholder="اختر"
                     options={[
                       { value: 'male', label: 'ذكر' },
@@ -237,19 +243,17 @@ const Members = () => {
                 </Form.Group>
               </Form.Row>
               
-              <Form.Group label="تاريخ الميلاد">
+              <Form.Group label="تاريخ الميلاد" name="dateOfBirth" error={errors.dateOfBirth?.message}>
                 <Input
                   type="date"
-                  value={formData.dateOfBirth}
-                  onChange={(e) => setFormData({ ...formData, dateOfBirth: e.target.value })}
+                  {...register('dateOfBirth')}
                 />
               </Form.Group>
               
-              <Form.Group label="العنوان">
+              <Form.Group label="العنوان" name="address" error={errors.address?.message}>
                 <Input
                   type="text"
-                  value={formData.address}
-                  onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                  {...register('address')}
                   placeholder="عنوان العضو"
                 />
               </Form.Group>
@@ -259,14 +263,16 @@ const Members = () => {
                   type="submit"
                   variant="primary"
                   icon={editingMember ? '💾' : '➕'}
+                  disabled={isAdding || isUpdating}
                 >
-                  {editingMember ? 'تحديث' : 'إضافة'}
+                  {editingMember ? (isUpdating ? 'جاري التحديث...' : 'تحديث') : (isAdding ? 'جاري الإضافة...' : 'إضافة')}
                 </Button>
                 {editingMember && (
                   <Button
                     type="button"
                     variant="cancel"
                     onClick={resetForm}
+                    disabled={isAdding || isUpdating}
                   >
                     إلغاء
                   </Button>
@@ -291,8 +297,9 @@ const Members = () => {
           }}
           title="تأكيد الحذف"
           onConfirm={handleDeleteConfirm}
-          confirmLabel="حذف"
+          confirmLabel={isDeleting ? 'جاري الحذف...' : 'حذف'}
           confirmVariant="danger"
+          confirmDisabled={isDeleting}
         >
           <p>هل أنت متأكد من حذف العضو؟</p>
         </Modal>

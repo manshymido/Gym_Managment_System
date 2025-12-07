@@ -1,22 +1,31 @@
 import React from 'react';
 import { FORM_GRID_COLUMNS } from '../../design-system/constants';
-import { spacing } from '../../design-system/theme';
+import formStyles from '../../styles/Form.module.css';
 
 const Form = ({
   children,
   onSubmit,
   gridColumns = 'auto',
+  handleSubmit, // react-hook-form handleSubmit
   ...props
 }) => {
-  const formStyle = {
-    display: 'flex',
-    flexDirection: 'column',
-    width: '100%',
-    ...props.style
+  // Support both react-hook-form and regular forms
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    if (handleSubmit) {
+      // react-hook-form handleSubmit expects a callback
+      handleSubmit((data) => {
+        if (onSubmit) {
+          onSubmit(e, data);
+        }
+      })(e);
+    } else if (onSubmit) {
+      onSubmit(e);
+    }
   };
 
   return (
-    <form onSubmit={onSubmit} style={formStyle} {...props}>
+    <form onSubmit={handleFormSubmit} className={formStyles.form} {...props}>
       {children}
     </form>
   );
@@ -27,34 +36,24 @@ const FormGroup = ({
   label,
   required = false,
   error,
-  style = {}
+  style = {},
+  name // For react-hook-form error access
 }) => {
+  // Support react-hook-form errors from formState
+  const displayError = error || (typeof error === 'object' && error?.message ? error.message : null);
+
   return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      gap: spacing.sm,
-      marginBottom: spacing.lg,
-      ...style
-    }}>
+    <div className={formStyles.formGroup} style={style}>
       {label && (
-        <label style={{
-          fontSize: '0.875rem',
-          fontWeight: 500,
-          color: '#374151'
-        }}>
+        <label className={formStyles.formLabel} htmlFor={name}>
           {label}
-          {required && <span style={{ color: '#ef4444', marginRight: '0.25rem' }}>*</span>}
+          {required && <span className={formStyles.formLabelRequired}>*</span>}
         </label>
       )}
       {children}
-      {error && typeof error === 'string' && (
-        <span style={{
-          fontSize: '0.75rem',
-          color: '#ef4444',
-          marginTop: '-0.75rem'
-        }}>
-          {error}
+      {displayError && typeof displayError === 'string' && (
+        <span className={formStyles.formError} role="alert">
+          {displayError}
         </span>
       )}
     </div>
@@ -72,13 +71,14 @@ const FormRow = ({
     : `repeat(${columns}, 1fr)`;
 
   return (
-    <div style={{
-      display: 'grid',
-      gridTemplateColumns: gridColumnsValue,
-      gap,
-      marginBottom: spacing.base,
-      ...style
-    }}>
+    <div 
+      className={formStyles.formRow}
+      style={{
+        gridTemplateColumns: gridColumnsValue,
+        gap,
+        ...style
+      }}
+    >
       {children}
     </div>
   );
@@ -90,12 +90,10 @@ const FormActions = ({
   style = {}
 }) => {
   return (
-    <div style={{
-      display: 'flex',
-      gap,
-      marginTop: spacing.base,
-      ...style
-    }}>
+    <div 
+      className={formStyles.formActions}
+      style={{ gap, ...style }}
+    >
       {children}
     </div>
   );

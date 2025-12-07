@@ -1,7 +1,15 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { gymManagerRegister } from '../../services/gymApi';
+import AuthContainer from '../../components/common/AuthContainer';
+import AuthHeader from '../../components/common/AuthHeader';
+import AuthForm from '../../components/common/AuthForm';
+import AuthFooter from '../../components/common/AuthFooter';
+import ErrorMessage from '../../components/common/ErrorMessage';
+import Input from '../../components/common/Input';
+import Button from '../../components/common/Button';
+import { spacing } from '../../design-system/theme';
 
 const GymRegister = () => {
   const [formData, setFormData] = useState({
@@ -48,208 +56,98 @@ const GymRegister = () => {
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.card}>
-        <div style={styles.header}>
-          <h2 style={styles.title}>إنشاء حساب مدير جيم</h2>
-          <p style={styles.subtitle}>سجل حسابك الآن وابدأ إدارة جيمك</p>
-        </div>
-        
-        {error && <div style={styles.error}>{error}</div>}
-        
-        <form onSubmit={handleSubmit} style={styles.form}>
-          <div style={styles.formGroup}>
-            <label htmlFor="name">الاسم *</label>
-            <input
-              id="name"
-              name="name"
-              type="text"
-              value={formData.name}
-              onChange={handleChange}
-              required
-              style={styles.input}
-              placeholder="أدخل اسمك الكامل"
-            />
-          </div>
+    <AuthContainer 
+      maxWidth="500px"
+      containerStyle={{ padding: `${spacing.xl} ${spacing.base}` }}
+    >
+      <AuthHeader 
+        title="إنشاء حساب مدير جيم" 
+        subtitle="سجل حسابك الآن وابدأ إدارة جيمك"
+      />
+      <ErrorMessage message={error} />
+      <AuthForm onSubmit={handleSubmit}>
+          <Input
+            id="name"
+            name="name"
+            type="text"
+            label="الاسم"
+            value={formData.name}
+            onChange={handleChange}
+            required
+            placeholder="أدخل اسمك الكامل"
+          />
 
-          <div style={styles.formGroup}>
-            <label htmlFor="gymName">اسم الجيم *</label>
-            <input
-              id="gymName"
-              name="gymName"
-              type="text"
-              value={formData.gymName}
-              onChange={handleChange}
-              required
-              style={styles.input}
-              placeholder="أدخل اسم الجيم"
-            />
-          </div>
+          <Input
+            id="gymName"
+            name="gymName"
+            type="text"
+            label="اسم الجيم"
+            value={formData.gymName}
+            onChange={handleChange}
+            required
+            placeholder="أدخل اسم الجيم"
+          />
 
-          <div style={styles.formGroup}>
-            <label htmlFor="email">البريد الإلكتروني *</label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              style={styles.input}
-              placeholder="example@gym.com"
-              autoComplete="email"
-            />
-          </div>
+          <Input
+            id="email"
+            name="email"
+            type="email"
+            label="البريد الإلكتروني"
+            value={formData.email}
+            onChange={handleChange}
+            required
+            placeholder="example@gym.com"
+            autoComplete="email"
+          />
 
-          <div style={styles.formGroup}>
-            <label htmlFor="password">كلمة المرور *</label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-              minLength={6}
-              style={styles.input}
-              placeholder="6 أحرف على الأقل"
-              autoComplete="new-password"
-            />
-          </div>
+          <Input
+            id="password"
+            name="password"
+            type="password"
+            label="كلمة المرور"
+            value={formData.password}
+            onChange={handleChange}
+            required
+            minLength={6}
+            placeholder="6 أحرف على الأقل"
+            autoComplete="new-password"
+          />
 
-          <div style={styles.formGroup}>
-            <label htmlFor="phone">رقم الهاتف</label>
-            <input
-              id="phone"
-              name="phone"
-              type="tel"
-              value={formData.phone}
-              onChange={handleChange}
-              style={styles.input}
-              placeholder="رقم الهاتف (اختياري)"
-            />
-          </div>
+          <Input
+            id="phone"
+            name="phone"
+            type="tel"
+            label="رقم الهاتف"
+            value={formData.phone}
+            onChange={handleChange}
+            placeholder="رقم الهاتف (اختياري)"
+          />
 
-          <div style={styles.formGroup}>
-            <label htmlFor="address">العنوان</label>
-            <input
-              id="address"
-              name="address"
-              type="text"
-              value={formData.address}
-              onChange={handleChange}
-              style={styles.input}
-              placeholder="عنوان الجيم (اختياري)"
-            />
-          </div>
+          <Input
+            id="address"
+            name="address"
+            type="text"
+            label="العنوان"
+            value={formData.address}
+            onChange={handleChange}
+            placeholder="عنوان الجيم (اختياري)"
+          />
 
-          <button type="submit" disabled={loading} style={styles.button}>
-            {loading ? 'جاري إنشاء الحساب...' : 'إنشاء الحساب'}
-          </button>
-        </form>
-
-        <div style={styles.footer}>
-          <p style={styles.footerText}>
-            لديك حساب بالفعل؟{' '}
-            <Link to="/gym/login" style={styles.link}>
-              تسجيل الدخول
-            </Link>
-          </p>
-          <p style={styles.footerText}>
-            <Link to="/" style={styles.link}>
-              العودة للصفحة الرئيسية
-            </Link>
-          </p>
-        </div>
-      </div>
-    </div>
+        <Button
+          type="submit"
+          disabled={loading}
+          fullWidth
+          style={{ marginTop: spacing.sm }}
+        >
+          {loading ? 'جاري إنشاء الحساب...' : 'إنشاء الحساب'}
+        </Button>
+      </AuthForm>
+      <AuthFooter links={[
+        { text: 'لديك حساب بالفعل؟', to: '/gym/login', label: 'تسجيل الدخول' },
+        { to: '/', label: 'العودة للصفحة الرئيسية' }
+      ]} />
+    </AuthContainer>
   );
-};
-
-const styles = {
-  container: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    minHeight: '100vh',
-    backgroundColor: '#f5f5f5',
-    padding: '2rem 1rem'
-  },
-  card: {
-    backgroundColor: 'white',
-    padding: '2.5rem',
-    borderRadius: '12px',
-    boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
-    width: '100%',
-    maxWidth: '500px'
-  },
-  header: {
-    textAlign: 'center',
-    marginBottom: '2rem'
-  },
-  title: {
-    fontSize: '1.75rem',
-    fontWeight: 'bold',
-    marginBottom: '0.5rem',
-    color: '#333'
-  },
-  subtitle: {
-    fontSize: '1rem',
-    color: '#666',
-    margin: 0
-  },
-  form: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '1.25rem'
-  },
-  formGroup: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '0.5rem'
-  },
-  input: {
-    padding: '0.875rem',
-    border: '1px solid #ddd',
-    borderRadius: '6px',
-    fontSize: '1rem',
-    transition: 'border-color 0.3s ease',
-    fontFamily: 'inherit'
-  },
-  button: {
-    padding: '0.875rem',
-    backgroundColor: '#007bff',
-    color: 'white',
-    border: 'none',
-    borderRadius: '6px',
-    fontSize: '1rem',
-    fontWeight: 'bold',
-    cursor: 'pointer',
-    marginTop: '0.5rem',
-    transition: 'background-color 0.3s ease'
-  },
-  error: {
-    backgroundColor: '#fee',
-    color: '#c33',
-    padding: '0.875rem',
-    borderRadius: '6px',
-    marginBottom: '1rem',
-    textAlign: 'center'
-  },
-  footer: {
-    marginTop: '2rem',
-    textAlign: 'center'
-  },
-  footerText: {
-    fontSize: '0.9rem',
-    color: '#666',
-    margin: '0.5rem 0'
-  },
-  link: {
-    color: '#007bff',
-    textDecoration: 'none',
-    fontWeight: '500'
-  }
 };
 
 export default GymRegister;

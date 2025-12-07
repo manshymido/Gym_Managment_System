@@ -1,0 +1,32 @@
+/* Layout Styles - Container, Loading, etc. */
+
+.container {
+  min-height: 100vh;
+}
+
+.containerCentered {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: var(--color-bg-default);
+  padding: var(--spacing-xl) var(--spacing-base);
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: var(--color-bg-default);
+  padding: var(--spacing-xl) var(--spacing-base);
+}
+
+.loadingContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-base);
+}
+

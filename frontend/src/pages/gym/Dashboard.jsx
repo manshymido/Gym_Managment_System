@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { getAllMembers, getAllSubscriptions, getAllPayments } from '../../services/gymApi';
 import GymLayout from '../../components/gym/GymLayout';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
@@ -7,6 +8,7 @@ import Button from '../../components/common/Button';
 import { colors, spacing } from '../../design-system/theme';
 
 const GymDashboard = () => {
+  const navigate = useNavigate();
   const [stats, setStats] = useState({
     totalMembers: 0,
     activeSubscriptions: 0,
@@ -42,7 +44,7 @@ const GymDashboard = () => {
     }
   };
 
-  const statCards = [
+  const statCards = useMemo(() => [
     {
       title: 'إجمالي الأعضاء',
       value: stats.totalMembers,
@@ -71,7 +73,7 @@ const GymDashboard = () => {
       gradient: colors.info.gradient,
       bgColor: colors.info.light
     }
-  ];
+  ], [stats.totalMembers, stats.activeSubscriptions, stats.totalRevenue, stats.todayAttendance]);
 
   if (loading) {
     return (
@@ -173,21 +175,21 @@ const GymDashboard = () => {
             <Button
               variant="secondary"
               icon="👥"
-              onClick={() => window.location.href = '/gym/members'}
+              onClick={() => navigate('/gym/members')}
             >
               إدارة الأعضاء
             </Button>
             <Button
               variant="secondary"
               icon="📋"
-              onClick={() => window.location.href = '/gym/subscriptions'}
+              onClick={() => navigate('/gym/subscriptions')}
             >
               إدارة الاشتراكات
             </Button>
             <Button
               variant="secondary"
               icon="✅"
-              onClick={() => window.location.href = '/gym/attendance'}
+              onClick={() => navigate('/gym/attendance')}
             >
               تسجيل الحضور
             </Button>

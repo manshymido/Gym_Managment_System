@@ -1,63 +1,40 @@
-import React from 'react';
-import { colors, borderRadius, shadows, transitions } from '../../design-system/theme';
+import React, { memo } from 'react';
+import cardStyles from '../../styles/Card.module.css';
 
 const Card = ({
   children,
   title,
   subtitle,
-  padding = '2rem',
+  padding,
   hover = false,
   className = '',
   style = {},
   ...props
 }) => {
+  const classes = [
+    cardStyles.card,
+    hover && cardStyles.cardHover,
+    className
+  ].filter(Boolean).join(' ');
+
   const cardStyle = {
-    backgroundColor: colors.background.paper,
-    borderRadius: borderRadius.lg,
-    padding,
-    boxShadow: shadows.base,
-    transition: hover ? transitions.slow : 'none',
+    ...(padding && { padding }),
     ...style
-  };
-
-  const handleMouseEnter = (e) => {
-    if (hover) {
-      e.currentTarget.style.transform = 'translateY(-4px)';
-      e.currentTarget.style.boxShadow = shadows.lg;
-    }
-  };
-
-  const handleMouseLeave = (e) => {
-    if (hover) {
-      e.currentTarget.style.transform = 'translateY(0)';
-      e.currentTarget.style.boxShadow = shadows.base;
-    }
   };
 
   return (
     <div
+      className={classes}
       style={cardStyle}
-      className={className}
-      onMouseEnter={hover ? handleMouseEnter : undefined}
-      onMouseLeave={hover ? handleMouseLeave : undefined}
       {...props}
     >
       {title && (
-        <div style={{ marginBottom: subtitle ? '0.5rem' : '1.5rem' }}>
-          <h3 style={{
-            fontSize: '1.5rem',
-            fontWeight: 700,
-            color: colors.text.primary,
-            margin: 0
-          }}>
+        <div className={subtitle ? cardStyles.cardTitleContainerWithSubtitle : cardStyles.cardTitleContainer}>
+          <h3 className={cardStyles.cardTitle}>
             {title}
           </h3>
           {subtitle && (
-            <p style={{
-              fontSize: '1rem',
-              color: colors.text.secondary,
-              margin: '0.5rem 0 0 0'
-            }}>
+            <p className={cardStyles.cardSubtitle}>
               {subtitle}
             </p>
           )}
@@ -68,5 +45,5 @@ const Card = ({
   );
 };
 
-export default Card;
+export default memo(Card);
 

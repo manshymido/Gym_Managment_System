@@ -1,0 +1,109 @@
+/* Hero Section Styles - أنماط قسم البطل (Hero Section) */
+
+.hero {
+  position: relative;
+  background: var(--color-primary-gradient);
+  color: white;
+  padding: var(--spacing-3xl) var(--spacing-xl);
+  text-align: center;
+  overflow: hidden;
+  min-height: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.heroContent {
+  max-width: 900px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.heroTitle {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 700;
+  margin-bottom: var(--spacing-xl);
+  line-height: 1.2;
+  animation: fadeInUp 0.8s ease-out;
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.2);
+}
+
+.heroDescription {
+  font-size: clamp(1rem, 2vw, 1.35rem);
+  margin-bottom: var(--spacing-2xl);
+  opacity: 0.95;
+  line-height: 1.8;
+  animation: fadeInUp 0.8s ease-out 0.2s both;
+  max-width: 700px;
+  margin: 0 auto var(--spacing-2xl);
+}
+
+.heroButtons {
+  display: flex;
+  gap: var(--spacing-base);
+  justify-content: center;
+  flex-wrap: wrap;
+  animation: fadeInUp 0.8s ease-out 0.4s both;
+}
+
+.heroBgCircle1 {
+  position: absolute;
+  top: -50%;
+  right: -10%;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  animation: float 20s ease-in-out infinite;
+  z-index: 0;
+}
+
+.heroBgCircle2 {
+  position: absolute;
+  bottom: -30%;
+  left: -5%;
+  width: 400px;
+  height: 400px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  animation: float 15s ease-in-out infinite reverse;
+  z-index: 0;
+}
+
+.heroBgCircle3 {
+  position: absolute;
+  top: 20%;
+  left: 10%;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  animation: float 25s ease-in-out infinite;
+  z-index: 0;
+}
+
+/* Animations */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) translateX(0px);
+  }
+  33% {
+    transform: translateY(-30px) translateX(20px);
+  }
+  66% {
+    transform: translateY(20px) translateX(-15px);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import { colors, borderRadius, shadows, transitions } from '../../design-system/theme';
 
 const Select = ({
@@ -11,12 +11,29 @@ const Select = ({
   error = false,
   label,
   id,
+  name,
+  register, // react-hook-form register
   ...props
 }) => {
+  const [isFocused, setIsFocused] = useState(false);
+
+  const getBorderColor = useCallback(() => {
+    if (error) return colors.danger.main;
+    if (isFocused && !disabled) return colors.primary.main;
+    return colors.gray[200];
+  }, [error, isFocused, disabled]);
+
+  const getBoxShadow = useCallback(() => {
+    if (isFocused && !disabled && !error) {
+      return `0 0 0 3px ${colors.primary.light}40`;
+    }
+    return 'none';
+  }, [isFocused, disabled, error]);
+
   const selectStyle = {
     width: '100%',
     padding: '0.875rem',
-    border: `2px solid ${error ? colors.danger.main : colors.gray[200]}`,
+    border: `2px solid ${getBorderColor()}`,
     borderRadius: borderRadius.base,
     fontSize: '1rem',
     fontFamily: 'inherit',
@@ -24,22 +41,29 @@ const Select = ({
     backgroundColor: disabled ? colors.gray[100] : colors.background.paper,
     color: colors.text.primary,
     cursor: disabled ? 'not-allowed' : 'pointer',
+    boxShadow: getBoxShadow(),
     ...props.style
   };
 
-  const handleFocus = (e) => {
-    if (!disabled && !error) {
-      e.target.style.borderColor = colors.primary.main;
-      e.target.style.boxShadow = `0 0 0 3px ${colors.primary.light}40`;
+  const handleFocus = useCallback((e) => {
+    setIsFocused(true);
+    if (props.onFocus) {
+      props.onFocus(e);
     }
-  };
+  }, [props]);
 
-  const handleBlur = (e) => {
-    e.target.style.borderColor = error ? colors.danger.main : colors.gray[200];
-    e.target.style.boxShadow = 'none';
-  };
+  const handleBlur = useCallback((e) => {
+    setIsFocused(false);
+    if (props.onBlur) {
+      props.onBlur(e);
+    }
+  }, [props]);
 
-  const selectId = id || (label ? `select-${label.replace(/\s+/g, '-').toLowerCase()}` : undefined);
+  const selectId = id || (label ? `select-${label.replace(/\s+/g, '-').toLowerCase()}` : undefined) || name;
+  const selectName = name || selectId;
+
+  // Register with react-hook-form if provided
+  const registerProps = register && name ? register(name, { required }) : {};
 
   return (
     <div style={{ width: '100%' }}>
@@ -59,14 +83,40 @@ const Select = ({
         </label>
       )}
       <select
+        ref={(e) => {
+          // If using react-hook-form, register the ref
+          if (registerProps.ref) {
+            registerProps.ref(e);
+          }
+        }}
         id={selectId}
-        value={value}
-        onChange={onChange}
+        name={selectName}
+        value={value !== undefined ? value : undefined}
+        onChange={(e) => {
+          if (onChange) {
+            onChange(e);
+          }
+          // Call react-hook-form onChange if provided
+          if (registerProps.onChange) {
+            registerProps.onChange(e);
+          }
+        }}
+        onBlur={(e) => {
+          handleBlur(e);
+          // Call react-hook-form onBlur if provided
+          if (registerProps.onBlur) {
+            registerProps.onBlur(e);
+          }
+        }}
         required={required}
         disabled={disabled}
         style={selectStyle}
         onFocus={handleFocus}
-        onBlur={handleBlur}
+        aria-label={label || placeholder}
+        aria-required={required}
+        aria-invalid={!!error}
+        aria-describedby={error ? `${selectId}-error` : undefined}
+        {...(registerProps.name ? {} : { name: selectName })}
         {...props}
       >
         {placeholder && (
@@ -90,12 +140,17 @@ const Select = ({
         })}
       </select>
       {error && typeof error === 'string' && (
-        <span style={{
-          display: 'block',
-          fontSize: '0.75rem',
-          color: colors.danger.main,
-          marginTop: '0.25rem'
-        }}>
+        <span 
+          id={`${selectId}-error`}
+          role="alert"
+          aria-live="polite"
+          style={{
+            display: 'block',
+            fontSize: '0.75rem',
+            color: colors.danger.main,
+            marginTop: '0.25rem'
+          }}
+        >
           {error}
         </span>
       )}

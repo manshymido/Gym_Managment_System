@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useState, useContext, useEffect, useMemo, useCallback } from 'react';
 
 const AuthContext = createContext();
 
@@ -21,30 +21,56 @@ export const AuthProvider = ({ children }) => {
     const savedUserType = localStorage.getItem('userType');
 
     if (token && savedUser) {
-      setUser(JSON.parse(savedUser));
-      setUserType(savedUserType);
+      try {
+        setUser(JSON.parse(savedUser));
+        setUserType(savedUserType);
+      } catch (error) {
+        console.error('Error parsing saved user data:', error);
+        // Clear invalid data
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        localStorage.removeItem('userType');
+      }
     }
     setLoading(false);
   }, []);
 
-  const login = (userData, token, type) => {
-    localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(userData));
-    localStorage.setItem('userType', type);
-    setUser(userData);
-    setUserType(type);
-  };
+  const login = useCallback((userData, token, type) => {
+    try {
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(userData));
+      localStorage.setItem('userType', type);
+      setUser(userData);
+      setUserType(type);
+    } catch (error) {
+      console.error('Error saving user data:', error);
+      throw new Error('فشل حفظ بيانات المستخدم');
+    }
+  }, []);
 
-  const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    localStorage.removeItem('userType');
-    setUser(null);
-    setUserType(null);
-  };
+  const logout = useCallback(() => {
+    try {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      localStorage.removeItem('userType');
+      setUser(null);
+      setUserType(null);
+    } catch (error) {
+      console.error('Error during logout:', error);
+    }
+  }, []);
+
+  // Memoize context value to prevent unnecessary re-renders
+  const value = useMemo(() => ({
+    user,
+    userType,
+    login,
+    logout,
+    loading
+  }), [user, userType, login, logout, loading]);
 
   return (
-    <AuthContext.Provider value={{ user, userType, login, logout, loading }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );

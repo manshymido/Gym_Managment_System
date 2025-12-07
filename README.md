@@ -198,6 +198,8 @@ Gym-system/
 - ✅ Content Security Policy (CSP)
 - ✅ Security Headers (X-Content-Type-Options, X-Frame-Options)
 - ✅ التحقق من صحة البيانات (Validation)
+- ✅ Request Size Limits - حماية من الطلبات الكبيرة
+- ✅ Graceful Shutdown - إغلاق آمن للخادم
 
 ## 💳 أنظمة الدفع
 
@@ -214,6 +216,29 @@ npm start            # تشغيل في وضع الإنتاج
 npm run create-admin # إنشاء admin افتراضي
 npm run test-api     # اختبار APIs
 ```
+
+## ⚙️ إعدادات متقدمة
+
+### تحسينات قاعدة البيانات
+
+تم تحسين اتصال MongoDB مع الميزات التالية:
+
+- **Connection Pooling**: إدارة فعالة لاتصالات قاعدة البيانات
+- **Retry Logic**: إعادة محاولة الاتصال تلقائياً مع exponential backoff
+- **Event Handlers**: مراقبة حالة الاتصال (connected, error, disconnected, reconnected)
+- **Graceful Shutdown**: إغلاق آمن للاتصال عند إيقاف الخادم
+- **Timeout Configuration**: إعدادات قابلة للتخصيص للـ timeouts
+
+### حدود حجم الطلبات
+
+تم إضافة حماية من الطلبات الكبيرة:
+
+- **JSON Body Limit**: حد أقصى لحجم JSON (افتراضي: 10MB)
+- **URL-encoded Limit**: حد أقصى لحجم URL-encoded data (افتراضي: 10MB)
+- **Error Handling**: معالجة مخصصة لأخطاء 413 Payload Too Large
+- **Security Logging**: تسجيل محاولات الطلبات الكبيرة
+
+يمكن تخصيص الحدود عبر متغيرات البيئة `REQUEST_SIZE_LIMIT_JSON` و `REQUEST_SIZE_LIMIT_URLENCODED`.
 
 ### Frontend Scripts
 ```bash
@@ -236,6 +261,17 @@ PAYPAL_CLIENT_ID=your_paypal_client_id       # معرف PayPal
 PAYPAL_CLIENT_SECRET=your_paypal_secret      # سر PayPal
 ADMIN_EMAIL=admin@example.com                # بريد Admin الافتراضي
 ADMIN_PASSWORD=admin123                       # كلمة مرور Admin الافتراضية
+
+# MongoDB Connection Options (اختياري)
+MONGODB_MAX_POOL_SIZE=10                     # الحد الأقصى لاتصالات MongoDB
+MONGODB_MIN_POOL_SIZE=2                      # الحد الأدنى لاتصالات MongoDB
+MONGODB_CONNECT_TIMEOUT_MS=30000             # مهلة الاتصال (ملي ثانية)
+MONGODB_SERVER_SELECTION_TIMEOUT_MS=5000     # مهلة اختيار الخادم (ملي ثانية)
+MONGODB_SOCKET_TIMEOUT_MS=45000              # مهلة Socket (ملي ثانية)
+
+# Request Size Limits (اختياري)
+REQUEST_SIZE_LIMIT_JSON=10mb                 # الحد الأقصى لحجم JSON
+REQUEST_SIZE_LIMIT_URLENCODED=10mb           # الحد الأقصى لحجم URL-encoded
 ```
 
 ### Frontend (.env)
